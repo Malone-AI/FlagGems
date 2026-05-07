@@ -225,7 +225,7 @@ def to_reference(inp, upcast=False):
             )
         else:
             ref_inp = ref_inp.to(
-                torch.float32 if not fp64_is_supported else torch.float64
+                torch.float64 if fp64_is_supported else torch.float32
             )
     return ref_inp
 
