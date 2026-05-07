@@ -3,17 +3,16 @@ import torch
 
 import flag_gems
 
-from . import attri_util as attr_utils
-from . import performance_utils as utils
+from . import base, consts
 
 vendor_name = flag_gems.vendor_name
 
 
-class LerpBenchmark(utils.GenericBenchmark):
+class LerpBenchmark(base.GenericBenchmark):
     def set_more_shapes(self):
         # self.shapes is a list of tuples, each containing three elements:
         # (N, C, H, W).
-        return None
+        return []
 
 
 def lerp_input_fn(shape, dtype, device):
@@ -23,32 +22,25 @@ def lerp_input_fn(shape, dtype, device):
     yield {"input": input, "end": end, "weight": weight},
 
 
-@pytest.mark.lerp
-@pytest.mark.skipif(
-    vendor_name == "kunlunxin" and utils.SkipVersion("torch", "<2.5"),
-    reason="The half dtype is only supported on torch >= 2.5.",
-)
-def test_lerp():
+@pytest.mark.lerp_tensor
+def test_lerp_tensor():
     bench = LerpBenchmark(
         input_fn=lerp_input_fn,
-        op_name="lerp",
+        op_name="lerp_tensor",
         torch_op=torch.lerp,
-        dtypes=attr_utils.FLOAT_DTYPES,
+        dtypes=consts.FLOAT_DTYPES,
     )
+
     bench.run()
 
 
-@pytest.mark.lerp_
-@pytest.mark.skipif(
-    vendor_name == "kunlunxin" and utils.SkipVersion("torch", "<2.5"),
-    reason="The half dtype is only supported on torch >= 2.5.",
-)
-def test_lerp_inplace():
+@pytest.mark.lerp_tensor_
+def test_lerp_tensor_inplace():
     bench = LerpBenchmark(
         input_fn=lerp_input_fn,
-        op_name="lerp_",
+        op_name="lerp_tensor_",
         torch_op=lambda input, end, weight: input.lerp_(end, weight),
-        dtypes=attr_utils.FLOAT_DTYPES,
+        dtypes=consts.FLOAT_DTYPES,
         is_inplace=True,
     )
     bench.run()

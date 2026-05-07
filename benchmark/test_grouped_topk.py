@@ -3,7 +3,7 @@ import torch
 
 import flag_gems
 
-from . import performance_utils as utils
+from . import base, utils
 
 try:
     from vllm._custom_ops import grouped_topk as vllm_grouped_topk
@@ -15,7 +15,7 @@ except (ImportError, AttributeError):
 vendor_name = flag_gems.vendor_name
 
 
-class GroupedTopKBenchmark(utils.Benchmark):
+class GroupedTopKBenchmark(base.Benchmark):
     def __init__(
         self,
         op_name,
@@ -49,9 +49,9 @@ class GroupedTopKBenchmark(utils.Benchmark):
         ]
         self.shapes = grouped_topk_configs
 
-    def get_input_iter(self, cur_dtype):
+    def get_input_iter(self, dtype):
         for config in self.shapes:
-            yield from self.grouped_topk_input_fn(config, cur_dtype, self.device)
+            yield from self.grouped_topk_input_fn(config, dtype, self.device)
 
     def grouped_topk_input_fn(self, config, dtype, device):
         num_tokens, num_experts, n_group, topk_group, topk = config
@@ -81,12 +81,12 @@ class GroupedTopKBenchmark(utils.Benchmark):
     utils.SkipVersion("torch", "<2.7"),
     reason="The version prior to 2.7 is not compatible with VLLM.",
 )
-@pytest.mark.skipif(vendor_name == "metax", reason="TODOFIX")
-@pytest.mark.skipif(vendor_name == "kunlunxin", reason="RESULT TODOFIX")
-@pytest.mark.skipif(vendor_name == "iluvatar", reason="RESULT TODOFIX")
-@pytest.mark.skipif(vendor_name == "mthreads", reason="RESULT TODOFIX")
-@pytest.mark.skipif(vendor_name == "hygon", reason="RuntimeError")
-@pytest.mark.skipif(flag_gems.vendor_name == "cambricon", reason="TypeError")
+@pytest.mark.skipif(vendor_name == "metax", reason="#2891: Not working")
+@pytest.mark.skipif(vendor_name == "kunlunxin", reason="#2891: Not working")
+@pytest.mark.skipif(vendor_name == "iluvatar", reason="#2891: Not working")
+@pytest.mark.skipif(vendor_name == "mthreads", reason="#2891: Not working")
+@pytest.mark.skipif(vendor_name == "hygon", reason="#2891: RuntimeError")
+@pytest.mark.skipif(flag_gems.vendor_name == "cambricon", reason="#2891: TypeError")
 def test_grouped_topk_no_renorm():
     bench = GroupedTopKBenchmark(
         op_name="grouped_topk",
@@ -110,12 +110,12 @@ def test_grouped_topk_no_renorm():
     utils.SkipVersion("torch", "<2.7"),
     reason="The version prior to 2.7 is not compatible with VLLM.",
 )
-@pytest.mark.skipif(vendor_name == "metax", reason="TODOFIX")
-@pytest.mark.skipif(vendor_name == "kunlunxin", reason="RESULT TODOFIX")
-@pytest.mark.skipif(vendor_name == "iluvatar", reason="RESULT TODOFIX")
-@pytest.mark.skipif(vendor_name == "mthreads", reason="RESULT TODOFIX")
-@pytest.mark.skipif(vendor_name == "hygon", reason="RuntimeError")
-@pytest.mark.skipif(flag_gems.vendor_name == "cambricon", reason="TypeError")
+@pytest.mark.skipif(vendor_name == "metax", reason="#2891: Not working")
+@pytest.mark.skipif(vendor_name == "kunlunxin", reason="#2891: Not working ")
+@pytest.mark.skipif(vendor_name == "iluvatar", reason="#2891: Not working")
+@pytest.mark.skipif(vendor_name == "mthreads", reason="#2891: Not working")
+@pytest.mark.skipif(vendor_name == "hygon", reason="#2891: RuntimeError")
+@pytest.mark.skipif(flag_gems.vendor_name == "cambricon", reason="#2891: TypeError")
 def test_grouped_topk_score_0():
     bench = GroupedTopKBenchmark(
         op_name="grouped_topk",
@@ -139,12 +139,12 @@ def test_grouped_topk_score_0():
     utils.SkipVersion("torch", "<2.7"),
     reason="The version prior to 2.7 is not compatible with VLLM.",
 )
-@pytest.mark.skipif(vendor_name == "metax", reason="TODOFIX")
-@pytest.mark.skipif(vendor_name == "kunlunxin", reason="RESULT TODOFIX")
-@pytest.mark.skipif(vendor_name == "iluvatar", reason="RESULT TODOFIX")
-@pytest.mark.skipif(vendor_name == "mthreads", reason="RESULT TODOFIX")
-@pytest.mark.skipif(vendor_name == "hygon", reason="RuntimeError")
-@pytest.mark.skipif(flag_gems.vendor_name == "cambricon", reason="TypeError")
+@pytest.mark.skipif(vendor_name == "metax", reason="#2891: Not working")
+@pytest.mark.skipif(vendor_name == "kunlunxin", reason="#2891: Not working")
+@pytest.mark.skipif(vendor_name == "iluvatar", reason="#2891: Not working")
+@pytest.mark.skipif(vendor_name == "mthreads", reason="#2891: Not working")
+@pytest.mark.skipif(vendor_name == "hygon", reason="#2891: RuntimeError")
+@pytest.mark.skipif(flag_gems.vendor_name == "cambricon", reason="#2891: TypeError")
 def test_grouped_topk_score_1():
     bench = GroupedTopKBenchmark(
         op_name="grouped_topk",
