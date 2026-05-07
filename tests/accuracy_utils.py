@@ -221,7 +221,7 @@ def to_reference(inp, upcast=False):
     if upcast:
         if ref_inp.is_complex():
             ref_inp = ref_inp.to(
-                torch.complex64 if not fp64_is_supported else torch.complex128
+                torch.complex128 if fp64_is_supported else torch.complex64
             )
         else:
             ref_inp = ref_inp.to(
