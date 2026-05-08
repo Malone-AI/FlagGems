@@ -224,9 +224,7 @@ def to_reference(inp, upcast=False):
                 torch.complex128 if fp64_is_supported else torch.complex64
             )
         else:
-            ref_inp = ref_inp.to(
-                torch.float64 if fp64_is_supported else torch.float32
-            )
+            ref_inp = ref_inp.to(torch.float64 if fp64_is_supported else torch.float32)
     return ref_inp
 
 
